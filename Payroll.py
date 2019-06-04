@@ -45,37 +45,40 @@ while not quit: #quit == False:
         else:
             userInput = None
             print('Here there is the list of your employees. Choose one: ')
-            for counter in range(0,len(employees)):
+            for counter in range(len(employees)):
                 #print(counter)#for debugging
                 listEmployees = '{0} - {1}'.format(counter, employees[counter][0]) #but it's a set and it must be in alphabetical order!
                 print(listEmployees)
                 #print(len(employees))#for debugging
-            InputEmployee = input('Choose the number(!) of the employee whose pay you want to enter: ') #IT RECEIVES ONLY STRINGS
-            #print(InputEmployee)#for debugging
             try:
-                InputEmployee_index = int(InputEmployee)
-                result = employeesDict.get(employees[InputEmployee_index][0],'No such employee')
-                #print(result)#for debugging
-                if result != 'No such employee':
-                    hours = float(input('Enter # hours worked this week by {}: '.format(employees[InputEmployee_index][0])))
-                    if hours <= 24*7:
-                        if hours > regHours:
-                            gross=((hours-regHours)*otRate*basicPay)+ (regHours*basicPay)
+                InputEmployee = input('Choose the number(!) of the employee whose pay you want to enter: ') #IT RECEIVES ONLY STRINGS
+                #print(InputEmployee)#for debugging
+                try:
+                    InputEmployee_index = int(InputEmployee)
+                    result = employeesDict.get(employees[InputEmployee_index][0],'No such employee')
+                    #print(result)#for debugging
+                    if result != 'No such employee':
+                        hours = float(input('Enter # hours worked this week by {}: '.format(employees[InputEmployee_index][0])))
+                        if hours <= 24*7:
+                            if hours > regHours:
+                                gross=((hours-regHours)*otRate*basicPay)+ (regHours*basicPay)
+                            else:
+                                gross=hours*basicPay
+                            tax=gross*taxRate
+                            net=gross-tax
+                            employeesDict[userInput] = (gross,tax,net)
+                            print('Gross salary: {0} €'.format(gross))
+                            print('Taxation: {0} €'.format(tax))
+                            print('Net salary: {0} €'.format(net))
+                            employees[InputEmployee_index][1] = net
                         else:
-                            gross=hours*basicPay
-                        tax=gross*taxRate
-                        net=gross-tax
-                        employeesDict[userInput] = (gross,tax,net)
-                        print('Gross salary: {0} €'.format(gross))
-                        print('Taxation: {0} €'.format(tax))
-                        print('Net salary: {0} €'.format(net))
-                        employees[InputEmployee_index][1] = net
+                            print('This is cheating! This amount of hours is impossible even for me (the computer)! Now I am offended!')
                     else:
-                        print('This is cheating! This amount of hours is impossible even for me (the computer)! Now I am offended!')
-                else:
-                    print('No such employee.')
-            except ValueError:
-                print("That's not an integer number!")
+                        print('No such employee.')
+                except ValueError:
+                    print("That's not a correct number!")
+            except IndexError:
+                print("That's not a correct index value!")
     #3) List employees in alphabetical order. Employee list: name, net pay
     elif userInput =='3':
         userInput = None
@@ -90,5 +93,4 @@ while not quit: #quit == False:
     elif userInput =='x':
         quit=True
     else:
-       print('Invalid sintax!')
-    #    print(countries.get('cn','Country not found!'))
+       print('Invalid sintax! Try again!')
